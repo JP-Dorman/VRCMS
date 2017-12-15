@@ -21,7 +21,7 @@ class ExistingEntities extends React.Component {
 
         return (
             <div className="entity">
-                <button className="entity-button" id={buttonId} onClick={this.props.toggleModal.bind(this, this.props[0]["name"], ["delete"], [""])} ></button>
+                <button className="entity-button" id={buttonId} onClick={this.props.toggleModal.bind(this, this.props[0]["name"], ["delete"], [])} ></button>
                 <div className="name"><span>{insertName}</span></div>
                 <div className="shape"><span>{insertShape}</span></div>
                 <div className="colour"><span style={{background: "#" + insertColour}}></span></div>

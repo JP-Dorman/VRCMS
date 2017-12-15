@@ -4,28 +4,56 @@ import RightDrawer from './rightDrawer/rightDrawer.js'
 import ExistingEntities from './existingEntities/existingEntities.js'
 import Modal from './modal/modal.js'
 import axios from 'axios';
+import * as firebase from 'firebase';
+
+
 
 class DashboardPage extends React.Component {
+    /*==================== State ====================*/
     constructor() {
         super();
         this.state = {
             rightDrawerOpen: "closed",
             jsonData: [],
             modalData:["",[],""],
-            modalShow: false
+            modalShow: false,
+
+            firebaseTutVal: 10
         };
     }
 
-    /*========== Doc Ready ==========*/
-    componentDidMount() {
+
+
+    /*==================== Doc Ready ====================*/
+    componentDidMount = () => {
         this.getJson();
+
+        /*========== Firebase ==========*/
+        const db = firebase.database();
+        const dbRef = db.ref().child('data');
+
+        dbRef.on('value', snapshot => {
+
+            this.setState({
+                data: snapshot.val()
+            })
+        })
+
+        const rootRef = firebase.database().ref().child('react');
+        const speedRef = rootRef.child('speed');
+
+        speedRef.on('value', snap => {
+            this.setState({
+                firebaseTutVal: snap.val()
+            });
+        });
+
     }
 
-    /*========== Functions ==========*/
+    /*==================== Functions ====================*/
     getJson = () => {
         axios.get('scene-setup.json')
         .then(response => {
-            console.log(response);
            this.setState({ jsonData: response.data["items"] })
         });
     }
@@ -45,10 +73,11 @@ class DashboardPage extends React.Component {
         });
     }
 
-    /*========== Page ==========*/
+    /*==================== Page ====================*/
     render() {
         return (
             <div id="dashboard-page">
+                {/*<h1>{this.state.firebaseTutVal}</h1>*/}
                 <div id="header-bar">
                     <h1>Edit Scene</h1>
                 </div>
@@ -77,6 +106,7 @@ class DashboardPage extends React.Component {
                 />
 
             <Modal
+                jsonData={this.state.jsonData}
                 modalShow={this.state.modalShow}
                 modalData={this.state.modalData}
                 toggleModal={this.toggleModal}
