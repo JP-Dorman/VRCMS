@@ -5,23 +5,20 @@ import './existingEntities.css'
 class ExistingEntities extends React.Component {
 
     render() {
-        const insertName = this.props[0]["name"];
-        const insertShape = this.props[1]["geometry"].match(/[\w]+(?=;)/);
-        const insertColour = this.props[2]["material"].match(/\w+$/);
-        const insertPositionXYZ = this.props[3]["position"].split(" ");
-        const insertPositionX = insertPositionXYZ[0];
-        const insertPositionY = insertPositionXYZ[1];
-        const insertPositionZ = insertPositionXYZ[2];
-        const insertScaleXYZ = this.props[4]["scale"].split(" ");
-        const insertScaleX = insertScaleXYZ[0];
-        const insertScaleY = insertScaleXYZ[1];
-        const insertScaleZ = insertScaleXYZ[2];
+        const insertName = this.props.name;
+        const insertShape = this.props.shapeText;
+        const insertColour = this.props.colourText;
+        const insertPositionX = this.props.positionX;
+        const insertPositionY = this.props.positionY;
+        const insertPositionZ = this.props.positionZ;
+        const insertScaleX = this.props.scaleX;
+        const insertScaleY = this.props.scaleY;
+        const insertScaleZ = this.props.scaleZ;
         const buttonId = "button-" + this.props.buttonNumber;
-
 
         return (
             <div className="entity">
-                <button className="entity-button" id={buttonId} onClick={this.props.toggleModal.bind(this, this.props[0]["name"], ["delete"], [])} ></button>
+                <button className="entity-button" id={buttonId} onClick={this.props.toggleModal.bind(this, insertName, ["delete"], [])} ></button>
                 <div className="name"><span>{insertName}</span></div>
                 <div className="shape"><span>{insertShape}</span></div>
                 <div className="colour"><span style={{background: "#" + insertColour}}></span></div>

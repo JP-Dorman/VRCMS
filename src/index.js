@@ -26,7 +26,6 @@ firebase.initializeApp(config);
 
 
 
-
 class App extends React.Component {
     /*==================== State ====================*/
     constructor() {
@@ -41,6 +40,20 @@ class App extends React.Component {
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
+    componentDidMount = () => {
+        // Realtime login listener
+        firebase.auth().onAuthStateChanged(firebaseUser => {
+            if (firebaseUser) {
+                this.setState ({
+                    loggedIn: true,
+                    userId: firebaseUser.uid
+                })
+            } else {
+                this.setState ({ loggedIn: false })
+            }
+        });
+    }
+
     /*==================== Login Functions ====================*/
     clickLogin = () => {
         const email = document.getElementById("input-email").value;
@@ -53,12 +66,9 @@ class App extends React.Component {
         // Listen for callback errors
         loginPromise.catch(e => console.log(e.message));
 
-        /*this.setState({
-            userId: firebase.auth()
-        })*/
-
-        /*console.log(firebase.auth());*/
+        console.log("login");
     }
+
     clickSignup = () => {
         // TODO: validate email
         const email = document.getElementById("input-email").value;
@@ -75,22 +85,12 @@ class App extends React.Component {
         loginPromise
             .then(user => console.log(user))
             .catch(e => console.log(e.message));
-
-        // Realtime login listener
-        firebase.auth().onAuthStateChanged(firebaseUser => {
-            if (firebaseUser) {
-                /*console.log(firebaseUser);*/
-                this.setState ({ loggedIn: true })
-            } else {
-                /*console.log('not logged in');*/
-                this.setState ({ loggedIn: false })
-            }
-        })
     }
+
     clickLogout = () => {
-        console.log("LOG OUT");
         firebase.auth().signOut();
     }
+
     handleInputChange = (event) => {
       const target = event.target;
       const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -102,10 +102,19 @@ class App extends React.Component {
     }
 
     /*==================== Route Configurations ====================*/
-    ConfigureRoutes = (props) => {
-        const loggedIn = this.props.loggedIn;
+    ConfigureRoutes = () => {
+        const loggedIn = this.state.loggedIn;
 
         if (loggedIn) {
+            return (
+                <Switch>
+                    <Route path="/scene" component={VrScenePage} />
+                    <Route path="/" component={DashboardPage}
+                        userId = {this.state.userId}
+                    />
+                </Switch>
+            );
+        } else {
             return (
                 <Switch>
                     <Route path="/"
@@ -124,20 +133,13 @@ class App extends React.Component {
                     />
                 </Switch>
             );
-        } else {
-            return (
-                <Switch>
-                    <Route path="/scene" component={VrScenePage} />
-                    <Route path="/" component={DashboardPage} />
-                </Switch>
-            );
         }
     }
 
     render() {
         return (
             <Router>
-                <this.ConfigureRoutes loggedIn={this.state.loggedIn} />
+                <this.ConfigureRoutes />
             </Router>
         );
     }

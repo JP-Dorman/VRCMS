@@ -1,7 +1,5 @@
 import React from 'react';
 import './login.css'
-import axios from 'axios';
-import * as firebase from 'firebase';
 
 
 class DashboardPage extends React.Component {

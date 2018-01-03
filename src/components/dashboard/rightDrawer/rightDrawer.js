@@ -1,6 +1,6 @@
 import React from 'react';
 import './rightDrawer.css'
-import axios from 'axios';
+import * as firebase from 'firebase';
 
 
 class RightDrawer extends React.Component {
@@ -34,47 +34,39 @@ class RightDrawer extends React.Component {
      handleSubmit = (event) => {
          event.preventDefault();
 
-         this.props.axiosGet;
+         const rootRef = firebase.database().ref();
+         const parentRef = rootRef.child('vrcms/vrEntities');
+         const inputPositionXYZ =
+         this.state.inputPositionX + " " +
+         this.state.inputPositionY + " " +
+         this.state.inputPositionZ;
+         const inputScaleXYZ =
+         this.state.inputScaleX + " " +
+         this.state.inputScaleY + " " +
+         this.state.inputScaleZ;
 
-         const inputName = this.state.inputName;
-         const inputShape = this.state.inputShape;
-         const inputColour = this.state.inputColour;
-         const inputPosition = this.state.inputPositionX +" "+ this.state.inputPositionY +" "+ this.state.inputPositionZ;
-         const inputScale = this.state.inputScaleX +" "+ this.state.inputScaleY +" "+ this.state.inputScaleZ;
-         const newEntity = [{"name": inputName}, {"geometry": inputShape}, {"material": inputColour}, {"position": inputPosition}, {"scale": inputScale}]
-         const entityList = this.props.jsonData;
-
-         if (inputName === "") {
-             console.log("name cannot be empty");
-             return false;
-         }
-
-         entityList.push(newEntity);
-
-         const items = entityList;
-
-         console.log("posted json:");
-         console.log(items);
-         this.postJson(items);
+         parentRef.child(this.props.latestEntityKey).set({
+             meta: {
+                 name: this.state.inputName,
+                 userId: "unknown"
+             },
+             props: {
+                 geometry: this.state.inputShape,
+                 material: this.state.inputColour,
+                 position: inputPositionXYZ,
+                 scale: inputScaleXYZ
+             }
+         });
      }
 
-     postJson = (items) => {
-        axios.post('http://localhost:3001/postJson', {
-            items
-        })
-        .then(function (response) {
-            console.log("success!");
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log("error:");
-            console.log(error);
-        });
-     }
+
 
     render() {
+        const openDrawer = this.props.open === true ? "open" :  "closed";
+
+
         return (
-            <div id="rightDrawerContainer" className={this.props.open}>
+            <div id="rightDrawerContainer" className={openDrawer}>
                 <button className="shade" onClick={this.props.toggleRightDrawer}></button>
                 <div id="rightDrawer">
                     <form onSubmit={this.handleSubmit}>

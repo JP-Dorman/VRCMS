@@ -8,6 +8,7 @@
     border: none;
     width: 100%;
     position: relative;
+    border-bottom: 1px solid #EEEEEE;
 }
 
 button.entity-button {
@@ -81,3 +82,11 @@ button.entity-button:hover {
 .position-x, .scale-x { align-items: flex-end; }
 .position-y, .scale-y { align-items: center; }
 .position-z, .scale-z { align-items: flex-start; }
+
+
+/*==================== >= 768px ====================*/
+@media (min-width: 768px) {
+    .entity > .name {
+        margin: 10px 40px;
+    }
+}

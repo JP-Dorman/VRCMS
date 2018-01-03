@@ -1,3 +1,4 @@
+/*==================== Global Styles ====================*/
 * {box-sizing: border-box;}
 
 html, body {
@@ -11,6 +12,12 @@ body {
     overflow: auto;
 }
 
+button {
+    border: none;
+    background: none;
+}
+
+/*==================== Local Styles ====================*/
 #dashboard-page { overflow: auto; }
 
 #header-bar {
@@ -22,12 +29,24 @@ body {
     align-items: center;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
     position: fixed;
+    padding: 0 20px;
+}
+
+#header-bar button {
+    color: #fff;
+    margin-right:20px;
+    padding: 0;
+    cursor: pointer;
+}
+
+#header-bar button .material-icons {
+    color: #fff;
 }
 
 #header-bar h1 {
-    margin: 0 20px;
     color: #fff;
     font-weight: 200;
+    font-size: 23px;
 }
 
 #entities {
@@ -61,7 +80,7 @@ body {
 
 
 
-/*====================  ====================*/
+/*==================== >= 768px ====================*/
 @media (min-width: 768px) {
     #fab {
         bottom: 50px;
@@ -71,6 +90,14 @@ body {
     #entities {
         height: auto;
         overflow: initial;
+    }
+
+    #header-bar {
+        padding: 40px;
+    }
+
+    #header-bar button {
+        margin-right: 40px;
     }
 }
 

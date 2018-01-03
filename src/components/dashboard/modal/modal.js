@@ -1,6 +1,5 @@
 import React from 'react';
 import './modal.css'
-import axios from 'axios';
 
 
 class Modal extends React.Component {
