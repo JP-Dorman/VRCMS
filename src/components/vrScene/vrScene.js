@@ -9,51 +9,67 @@ import SwordMixin from './mixins/swordMixin.js'
 import OrcMixin from './mixins/orcMixin.js'
 import BigOrcMixin from './mixins/bigOrcMixin.js'
 import {PlayerCursorMixin, PlayerTouchMixin} from './mixins/playerMixin.js'
+import * as firebase from 'firebase';
 
 
 class VrScenePage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-          dynamicElements: []
+          dynamicElements: [],
+          firebaseJsonData: []
         };
     }
 
     // Document ready
     componentDidMount() {
-      this.axiosFunction(`scene-setup.json`, 'testFunction');
+      this.firebaseGetData();
     }
 
-    // Make request for JSON
-    axiosFunction = (url, responseFunction) => {
-      axios.get(url)
-       .then(response => {
-         const json = response.data;
+    firebaseGetData = () => {
+        /*========== Firebase Application ==========*/
+        const rootRef = firebase.database().ref().child('vrcms');
+        const vrEntitiesRef = rootRef.child('vrEntities');
+        const userRef = vrEntitiesRef.child(this.props.userId);
 
-         this.jsonToArray(json);
-       });
-    }
+        if (userRef) {
+            userRef.on('value', snap => {
+                this.setState({ firebaseJsonData: [] });
 
-    // convert JSON to array for use later
-    jsonToArray = (json) => {
-      const elementList = [];
+                // Create new entry for list
+                snap.forEach(entity => {
+                    const meta = entity.child('meta');
+                    const props = entity.child('props');
+                    const key = entity.key;
 
-      for (const list in json) {
-        for (const item in json[list]) {
-          const attrList = [];
+                    const pushEntity = {
+                        "firebaseKey": key,
+                        "name":  meta.child('name').val(),
+                        "userId": this.state.userId,
+                        "primitive": props.child('primitive').val(),
+                        "color": props.child('color').val(),
+                        "positionX": props.child('positionX').val(),
+                        "positionY": props.child('positionY').val(),
+                        "positionZ": props.child('positionZ').val(),
+                        "scaleX": props.child('scaleX').val(),
+                        "scaleY": props.child('scaleY').val(),
+                        "scaleZ": props.child('scaleZ').val(),
+                    };
 
-          for (const attr in json[list][item]) {
-            for (const key in json[list][item][attr]) {
-              let value = json[list][item][attr][key];
-              attrList.push([key, value]);
-            }
-          }
-          elementList.push(attrList);
+                    // Push new item to firebaseJsonData array for populating list
+                    this.setState(prevState => ({
+                        firebaseJsonData: [...prevState.firebaseJsonData, pushEntity]
+                    }));
+
+                    // Set new entity id to one above current highest id
+                    if (key >= this.state.latestEntityKey) {
+                        this.setState({ latestEntityKey: parseInt(key, 10) + 1 })
+                    }
+                });
+            });
         }
-      }
-
-      this.setState({ dynamicElements: elementList })
     }
+
 
     render() {
         return (
@@ -62,7 +78,7 @@ class VrScenePage extends React.Component {
             <a-assets>
               {/*=== Images ===*/}
               <img id="groundTexture" src="https://cdn.aframe.io/a-painter/images/floor.jpg" alt="floor" crossOrigin="anonymous"/>
-              <img id="skyTexture" src="img/sky.png" alt="sky" crossOrigin="anonymous"/>
+              {/*<img id="skyTexture" src="http://jp-dorman.co.uk/vrcms/img/sky.png" alt="sky" crossOrigin="anonymous"/>*/}
               <SwordMixin />
               <OrcMixin />
               <BigOrcMixin />
@@ -78,7 +94,7 @@ class VrScenePage extends React.Component {
             </Entity>
 
             {/*=== Sky ===*/}
-            <a-sky height="2048" radius="30" src="#skyTexture" theta-length="90" width="2048"></a-sky>
+            <a-sky height="2048" radius="30" theta-length="90" width="2048" color='#5fc1ff'></a-sky>
 
             {/*=== Ground ===*/}
             <a-box id="ground-collider" static-body width="100" height="1" depth="100" visible="false" position="0 -0.5 0"></a-box>
@@ -96,8 +112,14 @@ class VrScenePage extends React.Component {
             <Entity camera="userHeight: 1.6" look-controls></Entity>
 
             {/*=== dynamicElements ===*/}
-            <DynamicElements elements={this.state.dynamicElements} />
-
+            {this.state.firebaseJsonData.map((obj, index) => {
+                return (
+                    <DynamicElements
+                        key={index}
+                        {...obj}
+                    />
+                );
+            })}
           </Scene>
         );
     }

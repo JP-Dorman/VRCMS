@@ -1,12 +1,19 @@
 import React from 'react';
 import './modal.css'
+import * as firebase from 'firebase';
 
 
 class Modal extends React.Component {
 
 
     handleDelete = (event) => {
-        console.log("DELETE NOT IMPLEMENTED YET");
+        const rootRef = firebase.database().ref().child('vrcms');
+        const vrEntitiesRef = rootRef.child('vrEntities');
+        const userRef = vrEntitiesRef.child(this.props.userId);
+
+
+        userRef.child(this.props.modalData[2][0]).remove();
+        this.props.toggleModal( "", [], "");
     }
 
     render() {

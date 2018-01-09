@@ -8,7 +8,10 @@ class DashboardPage extends React.Component {
 
         return (
             <div id="login-page">
+
                 <div id="login-card" className={"card " + logInOutClass}>
+                    <p>Please enter a dummy email address and a fake password at least 6 characters long.</p>
+
                     {/*=== Email ===*/}
                     <label>
                     <span>Email:</span>

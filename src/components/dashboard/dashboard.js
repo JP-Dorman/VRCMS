@@ -6,6 +6,12 @@ import RightDrawer from './rightDrawer/rightDrawer.js'
 import ExistingEntities from './existingEntities/existingEntities.js'
 import Modal from './modal/modal.js'
 import * as firebase from 'firebase';
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  Switch
+} from 'react-router-dom'
 
 
 class DashboardPage extends React.Component {
@@ -35,53 +41,44 @@ class DashboardPage extends React.Component {
         /*========== Firebase Application ==========*/
         const rootRef = firebase.database().ref().child('vrcms');
         const vrEntitiesRef = rootRef.child('vrEntities');
+        const userRef = vrEntitiesRef.child(this.props.userId);
 
-        vrEntitiesRef.on('value', snap => {
-            this.setState({ firebaseJsonData: [] });
+        if (userRef) {
+            userRef.on('value', snap => {
+                this.setState({ firebaseJsonData: [] });
 
-            snap.forEach(entity => {
-                const key = entity.key;
-                const latestEntityKey = this.state.latestEntityKey;
-                const name = entity.child('meta').child('name').val();
-                const userId = entity.child('meta').child('userId').val();
-                const geometry = entity.child('props').child('geometry').val();
-                const shapeText = geometry.match(/[\w]+(?=;)/);
-                const material = entity.child('props').child('material').val();
-                const colourText = material.match(/\w+$/);
-                const positionXYZ = entity.child('props').child('position').val().split(" ");
-                const positionX = positionXYZ[0];
-                const positionY = positionXYZ[1];
-                const positionZ = positionXYZ[2];
-                const scaleXYZ = entity.child('props').child('scale').val().split(" ");
-                const scaleX = scaleXYZ[0];
-                const scaleY = scaleXYZ[1];
-                const scaleZ = scaleXYZ[2];
-                const pushEntity = {
-                    "key": key,
-                    "name": name,
-                    "userId": userId,
-                    "geometry": geometry,
-                    "shapeText": shapeText,
-                    "material": material,
-                    "colourText": colourText,
-                    "positionX": positionX,
-                    "positionY": positionY,
-                    "positionZ": positionZ,
-                    "scaleX": scaleX,
-                    "scaleY": scaleY,
-                    "scaleZ": scaleZ,
-                };
+                // Create new entry for list
+                snap.forEach(entity => {
+                    const meta = entity.child('meta');
+                    const props = entity.child('props');
+                    const key = entity.key;
 
-                this.setState(prevState => ({
-                    firebaseJsonData: [...prevState.firebaseJsonData, pushEntity]
-                }));
+                    const pushEntity = {
+                        "firebaseKey": key,
+                        "name":  meta.child('name').val(),
+                        "userId": this.state.userId,
+                        "primitive": props.child('primitive').val(),
+                        "color": props.child('color').val(),
+                        "positionX": props.child('positionX').val(),
+                        "positionY": props.child('positionY').val(),
+                        "positionZ": props.child('positionZ').val(),
+                        "scaleX": props.child('scaleX').val(),
+                        "scaleY": props.child('scaleY').val(),
+                        "scaleZ": props.child('scaleZ').val(),
+                    };
 
-                // Set new entity id to one above current highest id
-                if (key >= latestEntityKey) {
-                    this.setState({ latestEntityKey: parseInt(key, 10) + 1 })
-                }
+                    // Push new item to firebaseJsonData array for populating list
+                    this.setState(prevState => ({
+                        firebaseJsonData: [...prevState.firebaseJsonData, pushEntity]
+                    }));
+
+                    // Set new entity id to one above current highest id
+                    if (key >= this.state.latestEntityKey) {
+                        this.setState({ latestEntityKey: parseInt(key, 10) + 1 })
+                    }
+                });
             });
-        });
+        }
     }
 
     toggleRightDrawer = () => {
@@ -100,10 +97,10 @@ class DashboardPage extends React.Component {
         }
     }
 
-    toggleModal = (headerContent, bodyContent, clickedButtonId) => {
+    toggleModal = (headerContent, bodyContent, firebaseNodeKey) => {
         this.setState ({
             modalShow: !this.state.modalShow,
-            modalData: [headerContent, bodyContent, clickedButtonId]
+            modalData: [headerContent, bodyContent, firebaseNodeKey]
         });
     }
 
@@ -112,8 +109,14 @@ class DashboardPage extends React.Component {
         return (
             <div id="dashboard-page">
                 <div id="header-bar">
-                    <button onClick={this.toggleLeftDrawer}><i className="material-icons">menu</i></button>
-                    <h1>Edit Scene</h1>
+                    <div id="header-bar-left">
+                        <button onClick={this.toggleLeftDrawer}><i className="material-icons">menu</i></button>
+                        <h1>Edit Scene</h1>
+                    </div>
+
+                    <div id="header-bar-right">
+                        <Link to={'/scene'} className="btn btn-negative">View Scene</Link>
+                    </div>
                 </div>
 
                 <div id="entities">
@@ -141,6 +144,7 @@ class DashboardPage extends React.Component {
                     toggleRightDrawer={this.toggleRightDrawer}
                     axiosGet={this.getJson}
                     jsonData={this.state.jsonData}
+                    userId={this.props.userId}
                     latestEntityKey={this.state.latestEntityKey}
                 />
 
@@ -149,6 +153,7 @@ class DashboardPage extends React.Component {
                     modalShow={this.state.modalShow}
                     modalData={this.state.modalData}
                     toggleModal={this.toggleModal}
+                    userId={this.props.userId}
                 />
             </div>
         );

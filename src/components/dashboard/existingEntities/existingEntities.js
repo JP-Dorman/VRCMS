@@ -6,8 +6,8 @@ class ExistingEntities extends React.Component {
 
     render() {
         const insertName = this.props.name;
-        const insertShape = this.props.shapeText;
-        const insertColour = this.props.colourText;
+        const insertShape = this.props.primitive;
+        const insertColour = this.props.color;
         const insertPositionX = this.props.positionX;
         const insertPositionY = this.props.positionY;
         const insertPositionZ = this.props.positionZ;
@@ -16,9 +16,10 @@ class ExistingEntities extends React.Component {
         const insertScaleZ = this.props.scaleZ;
         const buttonId = "button-" + this.props.buttonNumber;
 
+
         return (
             <div className="entity">
-                <button className="entity-button" id={buttonId} onClick={this.props.toggleModal.bind(this, insertName, ["delete"], [])} ></button>
+                <button className="entity-button" id={buttonId} onClick={this.props.toggleModal.bind(this, insertName, ["delete"], [this.props.firebaseKey])} ></button>
                 <div className="name"><span>{insertName}</span></div>
                 <div className="shape"><span>{insertShape}</span></div>
                 <div className="colour"><span style={{background: "#" + insertColour}}></span></div>

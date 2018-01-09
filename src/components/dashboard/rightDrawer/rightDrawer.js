@@ -8,8 +8,8 @@ class RightDrawer extends React.Component {
        super(props);
        this.state = {
          inputName: "",
-         inputShape: "primitive: box;",
-         inputColour: "color: #F44336",
+         inputShape: "box",
+         inputColour: "F44336",
          inputPositionX: "0",
          inputPositionY: "1",
          inputPositionZ: "-2",
@@ -35,26 +35,21 @@ class RightDrawer extends React.Component {
          event.preventDefault();
 
          const rootRef = firebase.database().ref();
-         const parentRef = rootRef.child('vrcms/vrEntities');
-         const inputPositionXYZ =
-         this.state.inputPositionX + " " +
-         this.state.inputPositionY + " " +
-         this.state.inputPositionZ;
-         const inputScaleXYZ =
-         this.state.inputScaleX + " " +
-         this.state.inputScaleY + " " +
-         this.state.inputScaleZ;
+         const parentRef = rootRef.child('vrcms/vrEntities/'+ this.props.userId);
 
          parentRef.child(this.props.latestEntityKey).set({
              meta: {
                  name: this.state.inputName,
-                 userId: "unknown"
              },
              props: {
-                 geometry: this.state.inputShape,
-                 material: this.state.inputColour,
-                 position: inputPositionXYZ,
-                 scale: inputScaleXYZ
+                 primitive: this.state.inputShape,
+                 color: this.state.inputColour,
+                 positionX: this.state.inputPositionX,
+                 positionY: this.state.inputPositionY,
+                 positionZ: this.state.inputPositionZ,
+                 scaleX: this.state.inputScaleX,
+                 scaleY: this.state.inputScaleY,
+                 scaleZ: this.state.inputScaleZ,
              }
          });
      }
@@ -81,10 +76,10 @@ class RightDrawer extends React.Component {
                         <label>
                             <span>Shape:</span>
                             <select name="inputShape" value={this.state.inputShape} onChange={this.handleInputChange}>
-                                <option value="primitive: box;">Box</option>
-                                <option value="primitive: sphere;">Sphere</option>
-                                <option value="primitive: cylinder;">Cylinder</option>
-                                <option value="primitive: plane;">Plane</option>
+                                <option value="box">Box</option>
+                                <option value="sphere">Sphere</option>
+                                <option value="cylinder">Cylinder</option>
+                                <option value="plane">Plane</option>
                             </select>
                         </label>
 
@@ -92,16 +87,16 @@ class RightDrawer extends React.Component {
                         <label>
                             <span>Colour:</span>
                             <select name="inputColour" value={this.state.inputColour} onChange={this.handleInputChange}>
-                                <option value="color: #F44336">Red</option>
-                                <option value="color: #FFEB3B">Yellow</option>
-                                <option value="color: #E91E63">Pink</option>
-                                <option value="color: #4CAF50">Green</option>
-                                <option value="color: #FF9800">Orange</option>
-                                <option value="color: #9C27B0">Purple</option>
-                                <option value="color: #2196F3">Blue</option>
-                                <option value="color: #212121">Black</option>
-                                <option value="color: #FAFAFA">White</option>
-                                <option value="color: #9E9E9E">Grey</option>
+                                <option value="F44336">Red</option>
+                                <option value="FFEB3B">Yellow</option>
+                                <option value="E91E63">Pink</option>
+                                <option value="4CAF50">Green</option>
+                                <option value="FF9800">Orange</option>
+                                <option value="9C27B0">Purple</option>
+                                <option value="2196F3">Blue</option>
+                                <option value="212121">Black</option>
+                                <option value="FAFAFA">White</option>
+                                <option value="9E9E9E">Grey</option>
                             </select>
                         </label>
 
@@ -163,16 +158,16 @@ class RightDrawer extends React.Component {
                         <label>
                             <span>Width:</span>
                             <select name="inputScaleX" value={this.state.inputScaleX} onChange={this.handleInputChange}>
-                                <option value="-5">-5</option>
-                                <option value="-4">-4</option>
-                                <option value="-3">-3</option>
-                                <option value="-2">-2</option>
-                                <option value="-1">-1</option>
                                 <option value="0">0</option>
+                                <option value="0.5">0.5</option>
                                 <option value="1">1</option>
+                                <option value="1.5">1.5</option>
                                 <option value="2">2</option>
+                                <option value="2.5">2.5</option>
                                 <option value="3">3</option>
+                                <option value="3.5">3.5</option>
                                 <option value="4">4</option>
+                                <option value="4.5">4.5</option>
                                 <option value="5">5</option>
                             </select>
                         </label>
@@ -181,16 +176,16 @@ class RightDrawer extends React.Component {
                         <label>
                             <span>Height:</span>
                             <select name="inputScaleY" value={this.state.inputScaleY} onChange={this.handleInputChange}>
-                                <option value="-5">-5</option>
-                                <option value="-4">-4</option>
-                                <option value="-3">-3</option>
-                                <option value="-2">-2</option>
-                                <option value="-1">-1</option>
                                 <option value="0">0</option>
+                                <option value="0.5">0.5</option>
                                 <option value="1">1</option>
+                                <option value="1.5">1.5</option>
                                 <option value="2">2</option>
+                                <option value="2.5">2.5</option>
                                 <option value="3">3</option>
+                                <option value="3.5">3.5</option>
                                 <option value="4">4</option>
+                                <option value="4.5">4.5</option>
                                 <option value="5">5</option>
                             </select>
                         </label>
@@ -199,16 +194,16 @@ class RightDrawer extends React.Component {
                         <label>
                             <span>Depth:</span>
                             <select name="inputScaleZ" value={this.state.inputScaleZ} onChange={this.handleInputChange}>
-                                <option value="-5">-5</option>
-                                <option value="-4">-4</option>
-                                <option value="-3">-3</option>
-                                <option value="-2">-2</option>
-                                <option value="-1">-1</option>
                                 <option value="0">0</option>
+                                <option value="0.5">0.5</option>
                                 <option value="1">1</option>
+                                <option value="1.5">1.5</option>
                                 <option value="2">2</option>
+                                <option value="2.5">2.5</option>
                                 <option value="3">3</option>
+                                <option value="3.5">3.5</option>
                                 <option value="4">4</option>
+                                <option value="4.5">4.5</option>
                                 <option value="5">5</option>
                             </select>
                         </label>

@@ -65,8 +65,6 @@ class App extends React.Component {
 
         // Listen for callback errors
         loginPromise.catch(e => console.log(e.message));
-
-        console.log("login");
     }
 
     clickSignup = () => {
@@ -74,9 +72,6 @@ class App extends React.Component {
         const email = document.getElementById("input-email").value;
         const password = document.getElementById("input-password").value;
         const auth = firebase.auth();
-
-        console.log("email");
-        console.log("password");
 
         // Sign in
         const loginPromise = auth.createUserWithEmailAndPassword(email, password);
@@ -108,9 +103,15 @@ class App extends React.Component {
         if (loggedIn) {
             return (
                 <Switch>
-                    <Route path="/scene" component={VrScenePage} />
-                    <Route path="/" component={DashboardPage}
-                        userId = {this.state.userId}
+                    <Route path="/scene"
+                        render={(routeProps) => (
+                            <VrScenePage {...routeProps} userId={this.state.userId} />
+                        )}
+                    />
+                    <Route path="/"
+                        render={(routeProps) => (
+                            <DashboardPage {...routeProps} userId={this.state.userId} />
+                        )}
                     />
                 </Switch>
             );

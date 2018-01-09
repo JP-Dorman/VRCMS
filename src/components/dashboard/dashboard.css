@@ -20,6 +20,7 @@ button {
 /*==================== Local Styles ====================*/
 #dashboard-page { overflow: auto; }
 
+/*========== Header Bar ==========*/
 #header-bar {
     height: 100px;
     min-height: 100px;
@@ -30,6 +31,14 @@ button {
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.25);
     position: fixed;
     padding: 0 20px;
+    justify-content: space-between;
+}
+
+/*=== Header Bar Left ===*/
+#header-bar-left {
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 #header-bar button {
@@ -49,12 +58,21 @@ button {
     font-size: 23px;
 }
 
+/*=== Header Bar Right ===*/
+#header-bar-right {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+/*========== Content ==========*/
 #entities {
     margin-top: 100px;
     height: calc(100vh - 100px);
     overflow: auto;
 }
 
+/*========== Fab ==========*/
 #fab {
     position: fixed;
     bottom: 20px;
@@ -75,6 +93,22 @@ button {
 
 #fab:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+
+.btn {
+    border-radius: 6px;
+    border: 1px solid #EEEEEE;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 20px;
+}
+
+.btn-negative {
+    border-color: #fff;
+    color: #fff;
 }
 
 
