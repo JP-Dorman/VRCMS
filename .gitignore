@@ -8,3 +8,4 @@ build
 
 *.mp4
 *.obj
+src/firebaseAuth.js

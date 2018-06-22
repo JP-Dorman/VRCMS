@@ -11,18 +11,10 @@ import DashboardPage from './components/dashboard/dashboard.js'
 import VrScenePage from './components/vrScene/vrScene.js'
 import LoginPage from './components/login/login.js'
 import * as firebase from 'firebase';
+import './firebaseAuth.js';
 
 
-/*==================== Firebase Setup ====================*/
-var config = {
-  apiKey: "AIzaSyC6IXRnUFoLq6effu-oOowAnISefT47Kyk",
-  authDomain: "fit-fin-183317.firebaseapp.com",
-  databaseURL: "https://fit-fin-183317.firebaseio.com",
-  projectId: "fit-fin-183317",
-  storageBucket: "fit-fin-183317.appspot.com",
-  messagingSenderId: "890661902760"
-};
-firebase.initializeApp(config);
+
 
 
 
